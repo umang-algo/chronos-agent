@@ -1,0 +1,32 @@
+# Environment & Secret Keys
+.env
+.env.local
+*.env
+
+# Python & Caches
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.coverage
+htmlcov/
+*.egg-info/
+.eggs/
+dist/
+build/
+
+# IDE & System Files
+.DS_Store
+.vscode/
+.idea/
+
+# Generated Mock Databases & Demo Artifacts
+mock_db/
+*.json.bak
+
+# Chronos Temporary Storage
+.chronos/
+chronos_shadow_*
+chronos_cli_ws_*
+chronos_chat_ui_ws_*
+chronos_bench_ws_*

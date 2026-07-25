@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chronos-Agent ⚡ Interactive Agent Substrate Visualizer</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <!-- Mermaid.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Top Navigation Header -->
+  <header class="navbar">
+    <div class="brand">
+      <span class="brand-icon">⚡</span>
+      <div>
+        <h1>CHRONOS-AGENT VISUAL SUBSTRATE</h1>
+        <span class="subtext">Real-Time Time-Travel Rollback, Checkpoint Storage & CTG DAG Inspector</span>
+      </div>
+    </div>
+
+    <div class="header-actions">
+      <div class="model-badge">
+        <span class="pulse-dot"></span>
+        <span id="modelName">OpenAI gpt-4o-mini</span>
+      </div>
+      <button id="btnReset" class="btn btn-secondary">🔄 Reset Clean Workspace</button>
+    </div>
+  </header>
+
+  <!-- Top Metrics Overview Bar -->
+  <section class="metrics-bar">
+    <div class="metric-pill">
+      <span class="lbl">Step</span>
+      <span class="val" id="valStep">0</span>
+    </div>
+    <div class="metric-pill">
+      <span class="lbl">Checkpoints Saved</span>
+      <span class="val" id="valCheckpoints">0</span>
+    </div>
+    <div class="metric-pill">
+      <span class="lbl">CTG DAG Nodes</span>
+      <span class="val" id="valNodes">0</span>
+    </div>
+    <div class="metric-pill">
+      <span class="lbl">Time-Travel Rollbacks</span>
+      <span class="val val-alert" id="valRollbacks">0</span>
+    </div>
+    <div class="metric-pill">
+      <span class="lbl">Auto-Sync</span>
+      <span class="val text-green">LIVE 🟢</span>
+    </div>
+  </section>
+
+  <!-- Main View Container: Top View Switcher Tabs -->
+  <div class="view-tabs">
+    <button class="tab-btn active" data-tab="tab-chat">💬 Real Conversational Agent & Quick Actions</button>
+    <button class="tab-btn" data-tab="tab-dag">🧬 Live CTG DAG Visualizer</button>
+    <button class="tab-btn" data-tab="tab-checkpoints">📸 Checkpoints Stack Inspector</button>
+    <button class="tab-btn" data-tab="tab-files">📁 ShadowFS Files Explorer</button>
+  </div>
+
+  <main class="main-content">
+
+    <!-- TAB 1: Conversational Agent & Quick Actions -->
+    <div id="tab-chat" class="tab-pane active">
+      <div class="two-col-layout">
+
+        <!-- Left: Real Agent Chat Console -->
+        <div class="glass-card">
+          <div class="card-header">
+            <h2>💬 Conversational AI Agent Console</h2>
+            <p>Type any prompt for OpenAI <code>gpt-4o-mini</code>. Tools execute inside Chronos protection.</p>
+          </div>
+
+          <!-- Quick Sample Prompts -->
+          <div class="quick-prompts">
+            <span class="prompt-pill" data-prompt="Inspect order #1050 and process a $25.00 refund.">Valid $25 Refund</span>
+            <span class="prompt-pill" data-prompt="Process a $999,999.00 refund for order #1050.">Illegal Excessive Refund</span>
+            <span class="prompt-pill" data-prompt="Write a python script: def test(x -> int:">Write Broken Python Code</span>
+            <span class="prompt-pill" data-prompt="Process refund for order #1050 with database crash simulation.">Simulate DB Crash</span>
+          </div>
+
+          <!-- Chat Stream -->
+          <div class="chat-stream" id="chatStream">
+            <div class="chat-msg msg-system">
+              <span class="msg-author">🤖 Chronos System</span>
+              <div class="msg-body">Agent ready with 1,000 order database. Type a prompt or click a sample pill above!</div>
+            </div>
+          </div>
+
+          <!-- Chat Form -->
+          <form id="chatForm" class="chat-form">
+            <input type="text" id="chatInput" placeholder="Type prompt (e.g. 'Process refund for order #1050 for $25')..." required autocomplete="off" />
+            <button type="submit" id="btnSend" class="btn btn-primary">Send 🚀</button>
+          </form>
+        </div>
+
+        <!-- Right: Live File State Preview -->
+        <div class="glass-card">
+          <div class="card-header flex-between">
+            <div>
+              <h2>📄 Disk File State Preview</h2>
+              <p>Real-time content of <code>mock_db/financial_ledger.json</code> on disk.</p>
+            </div>
+            <button class="btn btn-sm btn-secondary" id="btnQuickRefreshFile">Refresh</button>
+          </div>
+
+          <div class="code-box">
+            <pre><code id="quickFileViewer">Loading ledger file from disk...</code></pre>
+          </div>
+
+          <div class="card-header" style="margin-top: 1rem;">
+            <h2>🔍 Latest Root Cause Diagnostic Hint</h2>
+          </div>
+          <div class="hint-box" id="quickHintBox">
+            No active errors. Pre-flight guards and invariants active!
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- TAB 2: Live CTG DAG Visualizer -->
+    <div id="tab-dag" class="tab-pane">
+      <div class="glass-card full-card">
+        <div class="card-header flex-between">
+          <div>
+            <h2>🧬 Live Causal Execution Trace Graph (CTG) DAG Lineage</h2>
+            <p>Maps every turn: <code>Checkpoint ➔ Tool Call ➔ Invariant Check ➔ Failure ➔ Rollback ➔ Counterfactual Hint</code></p>
+          </div>
+          <button id="btnRedrawDAG" class="btn btn-sm btn-secondary">Redraw Graph</button>
+        </div>
+
+        <div class="dag-render-box">
+          <div class="mermaid" id="mermaidGraph">
+            graph LR
+              Start["🚀 Chronos Substrate Initialized"]
+          </div>
+        </div>
+
+        <div class="hint-box" id="dagFailureExplanation" style="margin-top: 1rem;">
+          No failure lineage detected yet. Execute an action to build CTG DAG nodes!
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: Checkpoints Stack Inspector -->
+    <div id="tab-checkpoints" class="tab-pane">
+      <div class="glass-card full-card">
+        <div class="card-header flex-between">
+          <div>
+            <h2>📸 ChronosHarness Atomic Checkpoints Stack</h2>
+            <p>Point-in-time snapshots stored in DualLedger and ShadowFS</p>
+          </div>
+          <span class="badge badge-purple" id="cpBadge">0 Checkpoints</span>
+        </div>
+
+        <div class="cp-grid" id="checkpointsGrid">
+          <div class="cp-empty">No checkpoints recorded yet. Run an action to record snapshots!</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 4: ShadowFS Files Explorer -->
+    <div id="tab-files" class="tab-pane">
+      <div class="glass-card full-card">
+        <div class="card-header">
+          <h2>📁 ShadowFS Workspace File Explorer</h2>
+          <p>Click any file on disk to inspect real contents created or modified by the agent.</p>
+        </div>
+
+        <div class="file-split-layout">
+          <div class="file-tree-list" id="fullFileTree">
+            <div class="tree-node active">mock_db/financial_ledger.json</div>
+            <div class="tree-node">mock_db/orders.json</div>
+          </div>
+
+          <div class="code-box full-code">
+            <pre><code id="fullFileViewer">Select a file from the list...</code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Execution Event Stream -->
+    <section class="glass-card full-width">
+      <div class="card-header flex-between">
+        <h2>📜 Substrate Log Stream (Dual-Ledger & ShadowFS Events)</h2>
+        <button id="btnClearLogs" class="btn btn-sm btn-secondary">Clear Logs</button>
+      </div>
+
+      <div class="log-stream" id="logStream">
+        <div class="log-entry log-info">
+          <span class="log-time">[System Init]</span>
+          <span class="log-msg">Chronos Substrate Visualizer running with 1,000 orders in mock_db. Auto-sync active.</span>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

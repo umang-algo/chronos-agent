@@ -1,0 +1,5 @@
+# Chronos-Agent Core Dependencies
+# Chronos relies strictly on Python standard library for maximum zero-dependency portability.
+
+# Optional development & testing dependencies
+pytest>=7.0.0
